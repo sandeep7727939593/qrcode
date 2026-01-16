@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>QR Code Generator | Server-Side Ready</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ED1703;
+            --primary-light: #FF3A2B;
+            --primary-dark: #c81202;
+            --secondary: #2A2D43;
+            --accent: #6C63FF;
+            --light: #f8f9fa;
+            --dark: #121212;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --success: #28a745;
+            --border-radius: 12px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        /* NAVBAR */
+        .navbar {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 18px 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand i {
+            font-size: 26px;
+        }
+
+        .tagline {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--gray);
+            margin-left: 5px;
+            letter-spacing: 0.3px;
+        }
+
+        /* MAIN CONTAINER */
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: calc(100vh - 80px);
+            padding: 40px 20px;
+            gap: 40px;
+        }
+
+        @media (max-width: 992px) {
+            .main {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* FORM CONTAINER */
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        .header {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--gray);
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        /* FORM STYLES */
+        .qr-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group label i {
+            color: var(--primary);
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 18px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            border-radius: 10px;
+            border: 2px solid var(--gray-light);
+            outline: none;
+            font-size: 16px;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(237, 23, 3, 0.1);
+        }
+
+        select.form-control {
+            padding-left: 16px;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 20px;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+            padding-left: 16px;
+        }
+
+        /* FORM ACTIONS */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 7px 15px rgba(237, 23, 3, 0.2);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--secondary);
+            border: 2px solid var(--gray-light);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* QR PREVIEW CONTAINER */
+        .preview-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--accent), var(--primary));
+        }
+
+        .preview-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .preview-header h2 {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .preview-header p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        #qrPreview {
+            width: 100%;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px dashed var(--gray-light);
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: var(--gray);
+        }
+
+        .preview-placeholder i {
+            font-size: 60px;
+            margin-bottom: 15px;
+            color: var(--gray-light);
+        }
+
+        .preview-placeholder h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .preview-actions .btn {
+            flex: 1;
+        }
+
+        /* QR Code Display */
+        .qr-display {
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .qr-display h4 {
+            margin-bottom: 20px;
+            color: var(--secondary);
+            font-size: 18px;
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .qr-details {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--gray-light);
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .qr-details h5 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qr-details p {
+            color: var(--gray);
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        /* FORM STATUS MESSAGES */
+        .form-status {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .form-status.success {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: var(--success);
+            display: block;
+        }
+
+        .form-status.error {
+            background: rgba(237, 23, 3, 0.1);
+            border: 1px solid rgba(237, 23, 3, 0.3);
+            color: var(--primary);
+            display: block;
+        }
+
+        /* SERVER INFO */
+        .server-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(237, 23, 3, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .server-info h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .server-info p {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .form-container,
+            .preview-container {
+                padding: 25px 20px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .form-actions,
+            .preview-actions {
+                flex-direction: column;
+            }
+
+            .main {
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fas fa-qrcode"></i>
+            <div>
+                <div>Free QR Generator</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <!-- FORM CONTAINER -->
+        <div class="form-container">
+            <div class="header">QR CODE GENERATOR</div>
+            <h1>Create QR Code</h1>
+            <p class="subtitle">Fill out the form to generate a QR code.
+            </p>
+
+            <!-- Form Status Messages -->
+            <div id="formStatus" class="form-status"></div>
+
+            <!-- QR Generation Form -->
+            <form id="qrForm" class="qr-form" method="POST" action="/api/generate-qr" >
+                <!-- Content Type Selection -->
+                <!-- Content Field (dynamic based on type) -->
+                <div class="form-group">
+                    <label for="url" id="contentLabel"><i class="fas fa-pen"></i> Content</label>
+                    <div class="input-group">
+                        <i class="fas fa-link" id="contentIcon"></i>
+                        <input type="text" id="content" name="url" class="form-control"
+                            placeholder="https://example.com" required>
+                    </div>
+                </div>
+                <!-- QR Code Options -->
+                <div class="form-group">
+                    <label for="size"><i class="fas fa-expand-alt"></i> QR Code Size</label>
+                    <select id="size" name="size" class="form-control">
+                        <option value="200">Small (200x200)</option>
+                        <option value="300" selected>Medium (300x300)</option>
+                        <option value="400">Large (400x400)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="color"><i class="fas fa-palette"></i> QR Code Color</label>
+                    <input type="color" id="color" name="color" class="form-control" value="#121212"
+                        style="height: 50px; padding: 5px;">
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        Generate Qr Code
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PREVIEW CONTAINER -->
+        <div class="preview-container">
+            <div class="preview-header">
+                <h2>QR Code Preview</h2>
+                <p>Your generated QR code will appear here</p>
+            </div>
+
+            <div id="qrPreview">
+                <div class="preview-placeholder">
+                    <i class="fas fa-qrcode"></i>
+                    <h3>No QR Code Generated Yet</h3>
+                    <p>Fill out the form and generate a QR code to see it here</p>
+                </div>
+            </div>
+
+            <div class="preview-actions">
+                <button class="btn btn-primary" onclick="downloadQR()" id="downloadBtn" disabled>
+                    <i class="fas fa-download"></i> Download PNG
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('qrForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/api/generate-qr', {
+              method: 'POST',
+              body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                setTimeout(() => {
+                    displayServerQRCode(data.qrCodeUrl, data.details);
+                }, 1000)
+              } else {
+                showFormStatus(data.error || 'Failed to generate QR code', 'error');
+              }
+            })
+            .catch(error => {
+              showFormStatus('Error connecting to server', 'error');
+            });
+            
+        });
+
+        // Display server-generated QR code
+        function displayServerQRCode(qrCodeUrl, details) {
+            document.getElementById('qrPreview').innerHTML = `
+                    <div class="qr-display">
+                    <h4>Free-Generated QR Code</h4>
+                    <img id="qrcodeimg"src="${qrCodeUrl}" alt="QR Code" style="max-width: 100%;">
+                    </div>
+                `;
+
+            document.getElementById('downloadBtn').disabled = false;
+        }
+
+        // Show form status messages
+        function showFormStatus(message, type) {
+            const statusDiv = document.getElementById('formStatus');
+            statusDiv.className = `form-status ${type}`;
+            statusDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                statusDiv.className = 'form-status';
+                statusDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        // Download QR code as PNG
+        function downloadQR() {
+            const qrImg = document.querySelector('#qrcodeimg');
+
+            let qrSource;
+
+            // QRCode.js sometimes creates <img> or <canvas>
+            if (qrImg) {
+                qrSource = qrImg.src;
+            } else {
+                alert("Generate QR code first");
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = qrSource;
+            link.download = qrSource;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+
+</body>
+
+</html>
