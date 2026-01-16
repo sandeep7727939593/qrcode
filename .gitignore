@@ -25,5 +25,5 @@ Thumbs.db
 # Cache
 .cache/
 
-public/qr/*
+# public/qr/*
 package-lock.json
