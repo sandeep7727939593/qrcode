@@ -2,7 +2,7 @@ const QRCode = require('qrcode');
 const path = require('path');
 
 module.exports = function (urlToEncode, color, size) {
-    let outputPath = path.resolve("public", "qr");
+    let outputPath = path.resolve("public");
     let name = Date.now() + ".png";
     QRCode.toFile(`${outputPath}/${name}`, urlToEncode, {
         width : size || 100,

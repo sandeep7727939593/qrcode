@@ -1,5 +1,5 @@
 function getQrUrl(qr) {
-    return `/qr/${qr}`;
+    return qr;
 }
 
 module.exports = {getQrUrl}
