@@ -15,6 +15,7 @@ module.exports.generateQr = async (req, res) => {
         }
         const qr = qrcode(url, color, size);
         const qr_path = await UploadFile(qr);
+
         Qr.create({
             request_url: url,
             qr_path: qr_path.url
