@@ -2,6 +2,8 @@ const qrcode = require("./../utils/qrgenerator");
 const validator = require("validator");
 const Qr = require('./../models/QrModel');
 const {getQrUrl} = require('./../utils/urls');
+const UploadFile = require('./../utils/uploadFile');
+
 
 module.exports.generateQr = async (req, res) => {
     try {
@@ -12,13 +14,14 @@ module.exports.generateQr = async (req, res) => {
             return res.status(400).json({ error: "Invalid URL" });
         }
         const qr = qrcode(url, color, size);
+        const qr_path = await UploadFile(qr);
         Qr.create({
             request_url: url,
-            qr_path: qr
+            qr_path: qr_path
         });
         res.status(201).json({
             success : true,
-            qrCodeUrl: getQrUrl(qr)
+            qrCodeUrl: getQrUrl(qr_path)
         });
     } catch (err) {
         if (err.code === 11000) {
