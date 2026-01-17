@@ -15,13 +15,14 @@ module.exports.generateQr = async (req, res) => {
         }
         const qr = qrcode(url, color, size);
         const qr_path = await UploadFile(qr);
+        console.log(qr_path, url)
         Qr.create({
             request_url: url,
-            qr_path: qr_path
+            qr_path: qr_path.url
         });
         res.status(201).json({
             success : true,
-            qrCodeUrl: getQrUrl(qr_path)
+            qrCodeUrl: getQrUrl(qr_path.url)
         });
     } catch (err) {
         if (err.code === 11000) {
