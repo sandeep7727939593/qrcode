@@ -2,7 +2,6 @@ const qrcode = require("./../utils/qrgenerator");
 const validator = require("validator");
 const Qr = require('./../models/QrModel');
 const {getQrUrl} = require('./../utils/urls');
-const UploadFile = require('./../utils/uploadFile');
 
 
 module.exports.generateQr = async (req, res) => {
@@ -13,15 +12,16 @@ module.exports.generateQr = async (req, res) => {
         if (!url || !validator.isURL(url)) {
             return res.status(400).json({ error: "Invalid URL" });
         }
-        const qr = qrcode(url, color, size);
-        const qr_path = await UploadFile(qr);
-        Qr.create({
+        // QR image local "public/" folder me save hoti hai aur Express usse serve karta hai
+        const fileName = await qrcode(url, color, size);
+        const qrPath = `/${fileName}`;
+        await Qr.create({
             request_url: url,
-            qr_path: qr_path.url
+            qr_path: qrPath
         });
         res.status(201).json({
             success : true,
-            qrCodeUrl: getQrUrl(qr_path.url)
+            qrCodeUrl: getQrUrl(qrPath)
         });
     } catch (err) {
         if (err.code === 11000) {
@@ -30,5 +30,18 @@ module.exports.generateQr = async (req, res) => {
 
         console.error(err);
         res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+module.exports.stats = async (req, res) => {
+    try {
+        const [total, recent] = await Promise.all([
+            Qr.countDocuments(),
+            Qr.find().sort({ createdAt: -1 }).limit(6).select("request_url qr_path createdAt").lean()
+        ]);
+        res.json({ total, recent });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Could not load stats" });
     }
 }

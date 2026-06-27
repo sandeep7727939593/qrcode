@@ -16,5 +16,5 @@ app.use('/api', apiRouter);
 app.use('/', clientRouter);
 
 app.listen(process.env.PORT, () => {
-    console.log(`Express Server Running on http://localhost:${process.env.PORT}`)
+    console.log(`Express Server Running on http://localhost:${process.env.PORT ?? 3000}`)
 })

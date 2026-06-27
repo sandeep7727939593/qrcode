@@ -3,466 +3,859 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>QR Code Generator | Server-Side Ready</title>
+    <title>QR Code Generator — Fast, Free & Server-Side</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
         :root {
             --primary: #ED1703;
-            --primary-light: #FF3A2B;
+            --primary-light: #FF4A38;
             --primary-dark: #c81202;
-            --secondary: #2A2D43;
             --accent: #6C63FF;
-            --light: #f8f9fa;
-            --dark: #121212;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
-            --success: #28a745;
-            --border-radius: 12px;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
+            --ink: #14152b;
+            --ink-soft: #5a5d75;
+            --line: #e9ebf3;
+            --surface: #ffffff;
+            --surface-2: #f6f7fb;
+            --success: #18a957;
+            --radius: 18px;
+            --radius-sm: 12px;
+            --shadow-sm: 0 1px 2px rgba(20, 21, 43, 0.06);
+            --shadow: 0 18px 48px -24px rgba(20, 21, 43, 0.30);
+            --ring: 0 0 0 4px rgba(237, 23, 3, 0.12);
+            --transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
             min-height: 100vh;
-            color: var(--dark);
+            color: var(--ink);
+            background:
+                radial-gradient(900px 600px at 100% -10%, rgba(108, 99, 255, 0.10), transparent 60%),
+                radial-gradient(800px 500px at -10% 10%, rgba(237, 23, 3, 0.08), transparent 55%),
+                #fbfbfe;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* NAVBAR */
+        /* ===== NAVBAR ===== */
         .navbar {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 18px 40px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: relative;
-            backdrop-filter: blur(10px);
+            padding: 18px clamp(20px, 5vw, 56px);
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--line);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .brand {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: 0.5px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 19px;
+            letter-spacing: -0.3px;
+            color: var(--ink);
         }
 
-        .brand i {
-            font-size: 26px;
+        .brand .logo {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            font-size: 18px;
+            box-shadow: 0 8px 18px -8px rgba(237, 23, 3, 0.6);
         }
 
-        .tagline {
+        .brand .accent {
+            color: var(--primary);
+        }
+
+        .nav-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink-soft);
+            padding: 8px 14px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--surface);
+        }
+
+        .nav-pill .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 0 4px rgba(24, 169, 87, 0.15);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            text-align: center;
+            padding: 48px 20px 8px;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             font-size: 12px;
-            font-weight: 500;
-            color: var(--gray);
-            margin-left: 5px;
-            letter-spacing: 0.3px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--primary);
+            background: rgba(237, 23, 3, 0.07);
+            padding: 7px 14px;
+            border-radius: 999px;
+            margin-bottom: 18px;
         }
 
-        /* MAIN CONTAINER */
+        .hero h1 {
+            font-size: clamp(30px, 5vw, 46px);
+            line-height: 1.08;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 14px;
+        }
+
+        .hero h1 .grad {
+            background: linear-gradient(120deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: var(--ink-soft);
+            line-height: 1.6;
+        }
+
+        /* ===== LAYOUT ===== */
         .main {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: calc(100vh - 80px);
-            padding: 40px 20px;
-            gap: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: start;
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 36px clamp(20px, 5vw, 40px) 64px;
         }
 
-        @media (max-width: 992px) {
+        @media (max-width: 900px) {
             .main {
-                flex-direction: column;
-                align-items: center;
+                grid-template-columns: 1fr;
             }
         }
 
-        /* FORM CONTAINER */
-        .form-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            width: 100%;
-            max-width: 500px;
-            border-radius: var(--border-radius);
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
+            padding: clamp(24px, 4vw, 34px);
         }
 
-        .form-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-        }
-
-        .header {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--primary);
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-            color: var(--secondary);
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 19px;
             font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 4px;
         }
 
-        .subtitle {
-            font-size: 15px;
-            color: var(--gray);
-            margin-bottom: 30px;
-            line-height: 1.5;
+        .card-title i {
+            color: var(--primary);
         }
 
-        /* FORM STYLES */
+        .card-sub {
+            font-size: 14px;
+            color: var(--ink-soft);
+            margin-bottom: 26px;
+        }
+
+        /* ===== FORM ===== */
         .qr-form {
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 22px;
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 9px;
         }
 
-        .form-group label {
+        .form-group > label {
             font-weight: 600;
-            color: var(--secondary);
-            font-size: 15px;
+            font-size: 14px;
+            color: var(--ink);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .form-group label i {
+        .form-group > label i {
             color: var(--primary);
+            font-size: 13px;
         }
 
         .input-group {
             position: relative;
         }
 
-        .input-group i {
+        .input-group > i {
             position: absolute;
-            left: 18px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--gray);
-            font-size: 18px;
+            color: var(--ink-soft);
+            font-size: 15px;
+            pointer-events: none;
         }
 
         .form-control {
             width: 100%;
-            padding: 16px 16px 16px 50px;
-            border-radius: 10px;
-            border: 2px solid var(--gray-light);
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--line);
             outline: none;
-            font-size: 16px;
+            font-size: 15px;
+            color: var(--ink);
+            background: var(--surface-2);
             transition: var(--transition);
-            background: white;
+        }
+
+        .input-group .form-control {
+            padding-left: 44px;
+        }
+
+        .form-control::placeholder {
+            color: #a3a6bb;
         }
 
         .form-control:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(237, 23, 3, 0.1);
+            background: var(--surface);
+            box-shadow: var(--ring);
         }
 
         select.form-control {
-            padding-left: 16px;
             appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a5d75' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: right 16px center;
-            background-size: 20px;
+            background-size: 18px;
         }
 
-        textarea.form-control {
-            min-height: 120px;
-            resize: vertical;
-            padding-left: 16px;
+        /* size segmented control */
+        .seg {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
         }
 
-        /* FORM ACTIONS */
-        .form-actions {
+        .seg input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .seg label {
+            text-align: center;
+            padding: 12px 8px;
+            border: 1.5px solid var(--line);
+            border-radius: var(--radius-sm);
+            background: var(--surface-2);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink-soft);
+            transition: var(--transition);
+        }
+
+        .seg label small {
+            display: block;
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+
+        .seg input:checked + label {
+            border-color: var(--primary);
+            background: rgba(237, 23, 3, 0.06);
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* color picker */
+        .color-row {
             display: flex;
-            gap: 15px;
-            margin-top: 10px;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .color-swatch {
+            position: relative;
+            width: 56px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--line);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .color-swatch input[type="color"] {
+            position: absolute;
+            inset: -6px;
+            width: calc(100% + 12px);
+            height: calc(100% + 12px);
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .swatches {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .swatches button {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px var(--line);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .swatches button:hover {
+            transform: scale(1.12);
         }
 
         .btn {
-            flex: 1;
-            padding: 16px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: var(--transition);
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            padding: 15px 18px;
+            border-radius: var(--radius-sm);
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            transition: var(--transition);
+            width: 100%;
         }
 
         .btn-primary {
-            background: linear-gradient(to right, var(--primary), var(--primary-light));
-            color: white;
+            color: #fff;
+            background: linear-gradient(120deg, var(--primary), var(--primary-light));
+            box-shadow: 0 14px 26px -12px rgba(237, 23, 3, 0.7);
         }
 
         .btn-primary:hover {
-            background: linear-gradient(to right, var(--primary-dark), var(--primary));
             transform: translateY(-2px);
-            box-shadow: 0 7px 15px rgba(237, 23, 3, 0.2);
+            box-shadow: 0 18px 30px -12px rgba(237, 23, 3, 0.8);
         }
 
-        .btn-secondary {
-            background: white;
-            color: var(--secondary);
-            border: 2px solid var(--gray-light);
+        .btn-primary:active {
+            transform: translateY(0);
         }
 
-        .btn-secondary:hover {
+        .btn[disabled] {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none;
+        }
+
+        .btn-ghost {
+            background: var(--surface-2);
+            color: var(--ink);
+            border: 1.5px solid var(--line);
+        }
+
+        .btn-ghost:hover {
             border-color: var(--primary);
             color: var(--primary);
-            transform: translateY(-2px);
         }
 
-        /* QR PREVIEW CONTAINER */
-        .preview-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            width: 100%;
-            max-width: 500px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .preview-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, var(--accent), var(--primary));
-        }
-
-        .preview-header {
-            width: 100%;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .preview-header h2 {
-            font-size: 24px;
-            color: var(--secondary);
-            margin-bottom: 5px;
-        }
-
-        .preview-header p {
-            color: var(--gray);
-            font-size: 14px;
-        }
-
-        #qrPreview {
-            width: 100%;
-            min-height: 300px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: var(--light);
-            border-radius: var(--border-radius);
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 2px dashed var(--gray-light);
-        }
-
-        .preview-placeholder {
-            text-align: center;
-            color: var(--gray);
-        }
-
-        .preview-placeholder i {
-            font-size: 60px;
-            margin-bottom: 15px;
-            color: var(--gray-light);
-        }
-
-        .preview-placeholder h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: var(--secondary);
-        }
-
-        .preview-actions {
-            display: flex;
-            gap: 15px;
-            width: 100%;
-        }
-
-        .preview-actions .btn {
-            flex: 1;
-        }
-
-        /* QR Code Display */
-        .qr-display {
-            text-align: center;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .qr-display h4 {
-            margin-bottom: 20px;
-            color: var(--secondary);
-            font-size: 18px;
-        }
-
-        #qrcode {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .qr-details {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid var(--gray-light);
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .qr-details h5 {
-            color: var(--secondary);
-            margin-bottom: 10px;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .qr-details p {
-            color: var(--gray);
-            font-size: 14px;
-            word-break: break-all;
-        }
-
-        /* FORM STATUS MESSAGES */
+        /* ===== STATUS ===== */
         .form-status {
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
             display: none;
+            align-items: center;
+            gap: 9px;
+            padding: 13px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .form-status.show {
+            display: flex;
         }
 
         .form-status.success {
-            background: rgba(40, 167, 69, 0.1);
-            border: 1px solid rgba(40, 167, 69, 0.3);
+            background: rgba(24, 169, 87, 0.10);
             color: var(--success);
-            display: block;
         }
 
         .form-status.error {
-            background: rgba(237, 23, 3, 0.1);
-            border: 1px solid rgba(237, 23, 3, 0.3);
+            background: rgba(237, 23, 3, 0.10);
             color: var(--primary);
-            display: block;
         }
 
-        /* SERVER INFO */
-        .server-info {
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(237, 23, 3, 0.05);
-            border-radius: 10px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .server-info h4 {
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-size: 16px;
+        /* ===== PREVIEW ===== */
+        .preview-stage {
+            position: relative;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            min-height: 320px;
+            border-radius: var(--radius);
+            background:
+                linear-gradient(var(--surface-2), var(--surface-2)) padding-box,
+                repeating-conic-gradient(#eef0f7 0% 25%, #fff 0% 50%) 0 / 22px 22px;
+            border: 1.5px dashed var(--line);
+            padding: 28px;
+            margin-bottom: 22px;
+            overflow: hidden;
         }
 
-        .server-info p {
-            font-size: 14px;
-            color: var(--gray);
+        .placeholder {
+            text-align: center;
+            color: var(--ink-soft);
+        }
+
+        .placeholder .ico {
+            display: grid;
+            place-items: center;
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 16px;
+            border-radius: 20px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            font-size: 32px;
+            color: #c2c5d6;
+        }
+
+        .placeholder h3 {
+            font-size: 16px;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+
+        .placeholder p {
+            font-size: 13.5px;
+            max-width: 240px;
+            margin: 0 auto;
             line-height: 1.5;
         }
 
-        /* ANIMATIONS */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
+        .qr-frame {
+            display: none;
+            background: #fff;
+            padding: 18px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        .qr-frame img {
+            display: block;
+            width: 240px;
+            max-width: 60vw;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        /* spinner overlay */
+        .loading {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(3px);
+            color: var(--ink-soft);
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 4px solid var(--line);
+            border-top-color: var(--primary);
+            animation: spin 0.8s linear infinite;
+        }
+
+        .preview-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 420px) {
+            .preview-actions {
+                grid-template-columns: 1fr;
             }
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 15px;
-            }
+        /* feature chips */
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 4px 20px 56px;
+        }
 
-            .form-container,
-            .preview-container {
-                padding: 25px 20px;
-            }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink-soft);
+            background: var(--surface);
+            border: 1px solid var(--line);
+            padding: 9px 15px;
+            border-radius: 999px;
+            box-shadow: var(--shadow-sm);
+        }
 
-            h1 {
-                font-size: 26px;
-            }
+        .chip i {
+            color: var(--primary);
+        }
 
-            .form-actions,
-            .preview-actions {
-                flex-direction: column;
-            }
+        /* ===== WIDGETS SECTION ===== */
+        .section {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 0 clamp(20px, 5vw, 40px);
+        }
 
-            .main {
-                gap: 30px;
-            }
+        .section-head {
+            text-align: center;
+            margin-bottom: 26px;
+        }
+
+        .section-head h2 {
+            font-size: clamp(22px, 3.5vw, 30px);
+            font-weight: 800;
+            letter-spacing: -0.6px;
+        }
+
+        .section-head p {
+            color: var(--ink-soft);
+            font-size: 14.5px;
+            margin-top: 6px;
+        }
+
+        /* stats widget */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 56px;
+        }
+
+        @media (max-width: 640px) {
+            .stats { grid-template-columns: 1fr; }
+        }
+
+        .stat {
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 26px 24px;
+            overflow: hidden;
+        }
+
+        .stat::after {
+            content: '';
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .stat .ico {
+            display: grid;
+            place-items: center;
+            width: 46px;
+            height: 46px;
+            border-radius: 13px;
+            background: rgba(237, 23, 3, 0.08);
+            color: var(--primary);
+            font-size: 19px;
+            margin-bottom: 16px;
+        }
+
+        .stat .num {
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .stat .lbl {
+            font-size: 13.5px;
+            color: var(--ink-soft);
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        /* how it works widget */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 56px;
+        }
+
+        @media (max-width: 760px) {
+            .steps { grid-template-columns: 1fr; }
+        }
+
+        .step {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 28px 24px;
+        }
+
+        .step .badge {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            font-weight: 800;
+            font-size: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 20px -10px rgba(237, 23, 3, 0.7);
+        }
+
+        .step h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .step p {
+            font-size: 14px;
+            color: var(--ink-soft);
+            line-height: 1.6;
+        }
+
+        /* recent widget */
+        .recent-wrap {
+            margin-bottom: 56px;
+        }
+
+        .recent {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 14px;
+        }
+
+        @media (max-width: 760px) {
+            .recent { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 420px) {
+            .recent { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .recent-item {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .recent-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            border-color: rgba(237, 23, 3, 0.3);
+        }
+
+        .recent-item img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: contain;
+            border-radius: 8px;
+            background: var(--surface-2);
+        }
+
+        .recent-item span {
+            display: block;
+            font-size: 11px;
+            color: var(--ink-soft);
+            margin-top: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .recent-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--ink-soft);
+            font-size: 14px;
+            padding: 36px;
+            border: 1.5px dashed var(--line);
+            border-radius: var(--radius-sm);
+            background: var(--surface-2);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            border-top: 1px solid var(--line);
+            background: var(--surface);
+            margin-top: 24px;
+        }
+
+        .footer-inner {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 44px clamp(20px, 5vw, 40px) 28px;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr;
+            gap: 36px;
+        }
+
+        @media (max-width: 700px) {
+            .footer-inner { grid-template-columns: 1fr; gap: 28px; }
+        }
+
+        .footer-brand .brand {
+            margin-bottom: 12px;
+        }
+
+        .footer-brand p {
+            font-size: 13.5px;
+            color: var(--ink-soft);
+            line-height: 1.6;
+            max-width: 300px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .footer-social a {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            color: var(--ink-soft);
+            transition: var(--transition);
+        }
+
+        .footer-social a:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .footer-col h4 {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--ink);
+            margin-bottom: 14px;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 14px;
+            color: var(--ink-soft);
+            text-decoration: none;
+            padding: 5px 0;
+            transition: var(--transition);
+        }
+
+        .footer-col a:hover {
+            color: var(--primary);
+            padding-left: 4px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--line);
+            padding: 18px clamp(20px, 5vw, 40px);
+            text-align: center;
+            font-size: 13px;
+            color: var(--ink-soft);
+        }
+
+        .footer-bottom .accent { color: var(--primary); font-weight: 600; }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pop {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
@@ -472,156 +865,338 @@
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="brand">
-            <i class="fas fa-qrcode"></i>
-            <div>
-                <div>Free QR Generator</div>
-            </div>
+            <span class="logo"><i class="fas fa-qrcode"></i></span>
+            <span>QR<span class="accent">Forge</span></span>
         </div>
+        <span class="nav-pill"><span class="dot"></span> Server-side ready</span>
     </nav>
 
-    <!-- MAIN CONTENT -->
-    <div class="main">
-        <!-- FORM CONTAINER -->
-        <div class="form-container">
-            <div class="header">QR CODE GENERATOR</div>
-            <h1>Create QR Code</h1>
-            <p class="subtitle">Fill out the form to generate a QR code.
-            </p>
+    <!-- HERO -->
+    <header class="hero">
+        <span class="eyebrow"><i class="fas fa-bolt"></i> Free QR Generator</span>
+        <h1>Turn any link into a <span class="grad">scannable QR code</span></h1>
+        <p>Pick a size, choose a color, and download a crisp PNG in seconds — generated securely on the server.</p>
+    </header>
 
-            <!-- Form Status Messages -->
+    <!-- MAIN -->
+    <main class="main">
+        <!-- FORM CARD -->
+        <section class="card">
+            <h2 class="card-title"><i class="fas fa-sliders"></i> Customize</h2>
+            <p class="card-sub">Enter your destination and style the code to match your brand.</p>
+
             <div id="formStatus" class="form-status"></div>
 
-            <!-- QR Generation Form -->
-            <form id="qrForm" class="qr-form" method="POST" action="/api/generate-qr" >
-                <!-- Content Type Selection -->
-                <!-- Content Field (dynamic based on type) -->
+            <form id="qrForm" class="qr-form" method="POST" action="/api/generate-qr">
+                <!-- Content -->
                 <div class="form-group">
-                    <label for="url" id="contentLabel"><i class="fas fa-pen"></i> Content</label>
+                    <label for="content"><i class="fas fa-link"></i> Destination URL</label>
                     <div class="input-group">
-                        <i class="fas fa-link" id="contentIcon"></i>
+                        <i class="fas fa-globe"></i>
                         <input type="text" id="content" name="url" class="form-control"
                             placeholder="https://example.com" required>
                     </div>
                 </div>
-                <!-- QR Code Options -->
+
+                <!-- Size -->
                 <div class="form-group">
-                    <label for="size"><i class="fas fa-expand-alt"></i> QR Code Size</label>
-                    <select id="size" name="size" class="form-control">
-                        <option value="200">Small (200x200)</option>
-                        <option value="300" selected>Medium (300x300)</option>
-                        <option value="400">Large (400x400)</option>
-                    </select>
+                    <label><i class="fas fa-up-right-and-down-left-from-center"></i> Size</label>
+                    <div class="seg">
+                        <input type="radio" id="s200" name="size" value="200">
+                        <label for="s200">Small<small>200px</small></label>
+                        <input type="radio" id="s300" name="size" value="300" checked>
+                        <label for="s300">Medium<small>300px</small></label>
+                        <input type="radio" id="s400" name="size" value="400">
+                        <label for="s400">Large<small>400px</small></label>
+                    </div>
                 </div>
 
+                <!-- Color -->
                 <div class="form-group">
-                    <label for="color"><i class="fas fa-palette"></i> QR Code Color</label>
-                    <input type="color" id="color" name="color" class="form-control" value="#121212"
-                        style="height: 50px; padding: 5px;">
+                    <label for="color"><i class="fas fa-palette"></i> Foreground color</label>
+                    <div class="color-row">
+                        <span class="color-swatch">
+                            <input type="color" id="color" name="color" value="#14152b">
+                        </span>
+                        <div class="swatches" id="swatches">
+                            <button type="button" data-c="#14152b" style="background:#14152b"></button>
+                            <button type="button" data-c="#ED1703" style="background:#ED1703"></button>
+                            <button type="button" data-c="#6C63FF" style="background:#6C63FF"></button>
+                            <button type="button" data-c="#18a957" style="background:#18a957"></button>
+                            <button type="button" data-c="#0d6efd" style="background:#0d6efd"></button>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Form Actions -->
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">
-                        Generate Qr Code
-                    </button>
-                </div>
+                <button type="submit" class="btn btn-primary" id="generateBtn">
+                    <i class="fas fa-wand-magic-sparkles"></i> Generate QR Code
+                </button>
             </form>
-        </div>
+        </section>
 
-        <!-- PREVIEW CONTAINER -->
-        <div class="preview-container">
-            <div class="preview-header">
-                <h2>QR Code Preview</h2>
-                <p>Your generated QR code will appear here</p>
-            </div>
+        <!-- PREVIEW CARD -->
+        <section class="card">
+            <h2 class="card-title"><i class="fas fa-eye"></i> Preview</h2>
+            <p class="card-sub">Your generated QR code appears here, ready to download.</p>
 
-            <div id="qrPreview">
-                <div class="preview-placeholder">
-                    <i class="fas fa-qrcode"></i>
-                    <h3>No QR Code Generated Yet</h3>
-                    <p>Fill out the form and generate a QR code to see it here</p>
+            <div class="preview-stage">
+                <div class="placeholder" id="placeholder">
+                    <div class="ico"><i class="fas fa-qrcode"></i></div>
+                    <h3>Nothing here yet</h3>
+                    <p>Fill out the form and hit generate to see your code.</p>
+                </div>
+
+                <div class="qr-frame" id="qrFrame">
+                    <img id="qrcodeimg" src="" alt="Generated QR Code">
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <span>Generating your code…</span>
                 </div>
             </div>
 
             <div class="preview-actions">
-                <button class="btn btn-primary" onclick="downloadQR()" id="downloadBtn" disabled>
+                <button class="btn btn-ghost" id="copyBtn" onclick="copyLink()" disabled>
+                    <i class="fas fa-copy"></i> Copy link
+                </button>
+                <button class="btn btn-primary" id="downloadBtn" onclick="downloadQR()" disabled>
                     <i class="fas fa-download"></i> Download PNG
                 </button>
             </div>
-        </div>
+        </section>
+    </main>
+
+    <!-- FEATURE CHIPS -->
+    <div class="features">
+        <span class="chip"><i class="fas fa-shield-halved"></i> Secure & private</span>
+        <span class="chip"><i class="fas fa-infinity"></i> Unlimited codes</span>
+        <span class="chip"><i class="fas fa-image"></i> High-res PNG</span>
+        <span class="chip"><i class="fas fa-bolt"></i> Instant generation</span>
     </div>
 
+    <!-- WIDGET 1 — LIVE STATS -->
+    <section class="section">
+        <div class="stats">
+            <div class="stat">
+                <div class="ico"><i class="fas fa-qrcode"></i></div>
+                <div class="num" id="statTotal"><%= typeof total !== 'undefined' ? total : 0 %></div>
+                <div class="lbl">QR codes generated</div>
+            </div>
+            <div class="stat">
+                <div class="ico"><i class="fas fa-bolt"></i></div>
+                <div class="num">&lt; 1s</div>
+                <div class="lbl">Average generation time</div>
+            </div>
+            <div class="stat">
+                <div class="ico"><i class="fas fa-indian-rupee-sign"></i></div>
+                <div class="num">₹0</div>
+                <div class="lbl">Cost — free forever</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WIDGET 2 — HOW IT WORKS -->
+    <section class="section">
+        <div class="section-head">
+            <h2>How it works</h2>
+            <p>Three quick steps from a link to a downloadable QR code.</p>
+        </div>
+        <div class="steps">
+            <div class="step">
+                <div class="badge">1</div>
+                <h3>Paste your URL</h3>
+                <p>Drop in any website, profile or link you want people to reach.</p>
+            </div>
+            <div class="step">
+                <div class="badge">2</div>
+                <h3>Style it</h3>
+                <p>Pick a size and choose a color that matches your brand.</p>
+            </div>
+            <div class="step">
+                <div class="badge">3</div>
+                <h3>Download &amp; share</h3>
+                <p>Grab a crisp PNG and use it on prints, posters or screens.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WIDGET 3 — RECENT QR CODES -->
+    <section class="section recent-wrap">
+        <div class="section-head">
+            <h2>Recently generated</h2>
+            <p>The latest codes created on this server.</p>
+        </div>
+        <div class="recent" id="recentGrid">
+            <% if (typeof recent !== 'undefined' && recent.length) { %>
+                <% recent.forEach(function (item) { %>
+                    <div class="recent-item">
+                        <img src="<%= item.qr_path %>" alt="QR code" loading="lazy">
+                        <span title="<%= item.request_url %>"><%= item.request_url %></span>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="recent-empty">No QR codes yet — generate your first one above!</div>
+            <% } %>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="brand">
+                    <span class="logo"><i class="fas fa-qrcode"></i></span>
+                    <span>QR<span class="accent">Forge</span></span>
+                </div>
+                <p>The fast, free and private way to turn any link into a scannable QR code — generated securely on your own server.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <a href="#">Generate QR</a>
+                <a href="#">Features</a>
+                <a href="#">How it works</a>
+                <a href="#">Pricing</a>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <a href="#">Documentation</a>
+                <a href="#">API reference</a>
+                <a href="#">Privacy policy</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © <span id="year">2026</span> <span class="accent">QRForge</span> · Built with Node.js &amp; Express
+        </div>
+    </footer>
+
     <script>
-        document.getElementById('qrForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            fetch('/api/generate-qr', {
-              method: 'POST',
-              body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-              if (data.success) {
-                setTimeout(() => {
-                    displayServerQRCode(data.qrCodeUrl, data.details);
-                }, 1000)
-              } else {
-                showFormStatus(data.error || 'Failed to generate QR code', 'error');
-              }
-            })
-            .catch(error => {
-              showFormStatus('Error connecting to server', 'error');
-            });
-            
+        const form = document.getElementById('qrForm');
+        const generateBtn = document.getElementById('generateBtn');
+        const loading = document.getElementById('loading');
+        const placeholder = document.getElementById('placeholder');
+        const qrFrame = document.getElementById('qrFrame');
+        const qrImg = document.getElementById('qrcodeimg');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const copyBtn = document.getElementById('copyBtn');
+
+        let currentQrUrl = '';
+
+        // Color swatch quick-pick
+        document.getElementById('swatches').addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-c]');
+            if (!btn) return;
+            document.getElementById('color').value = btn.dataset.c;
         });
 
-        // Display server-generated QR code
-        function displayServerQRCode(qrCodeUrl, details) {
-            document.getElementById('qrPreview').innerHTML = `
-                    <div class="qr-display">
-                    <h4>Free-Generated QR Code</h4>
-                    <img id="qrcodeimg"src="${qrCodeUrl}" alt="QR Code" style="max-width: 100%;">
-                    </div>
-                `;
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
 
-            document.getElementById('downloadBtn').disabled = false;
-        }
+            const formData = new FormData(this);
+            setLoading(true);
 
-        // Show form status messages
-        function showFormStatus(message, type) {
-            const statusDiv = document.getElementById('formStatus');
-            statusDiv.className = `form-status ${type}`;
-            statusDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            fetch('/api/generate-qr', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        displayQRCode(data.qrCodeUrl);
+                        showStatus('QR code generated successfully!', 'success');
+                        refreshStats();
+                    } else {
+                        setLoading(false);
+                        showStatus(data.error || 'Failed to generate QR code', 'error');
+                    }
+                })
+                .catch(() => {
+                    setLoading(false);
+                    showStatus('Could not reach the server. Please try again.', 'error');
+                });
+        });
 
-            // Auto hide after 5 seconds
-            setTimeout(() => {
-                statusDiv.className = 'form-status';
-                statusDiv.innerHTML = '';
-            }, 5000);
-        }
-
-        // Download QR code as PNG
-        function downloadQR() {
-            const qrImg = document.querySelector('#qrcodeimg');
-
-            let qrSource;
-
-            // QRCode.js sometimes creates <img> or <canvas>
-            if (qrImg) {
-                qrSource = qrImg.src;
+        function setLoading(state) {
+            loading.classList.toggle('show', state);
+            generateBtn.disabled = state;
+            if (state) {
+                generateBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Generating…';
             } else {
-                alert("Generate QR code first");
-                return;
+                generateBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate QR Code';
             }
+        }
 
+        function displayQRCode(qrCodeUrl) {
+            currentQrUrl = qrCodeUrl;
+            qrImg.onload = () => {
+                setLoading(false);
+                placeholder.style.display = 'none';
+                qrFrame.style.display = 'block';
+                downloadBtn.disabled = false;
+                copyBtn.disabled = false;
+            };
+            qrImg.src = qrCodeUrl;
+        }
+
+        function showStatus(message, type) {
+            const el = document.getElementById('formStatus');
+            el.className = `form-status show ${type}`;
+            el.innerHTML = `<i class="fas fa-${type === 'success' ? 'circle-check' : 'circle-exclamation'}"></i> ${message}`;
+            clearTimeout(el._t);
+            el._t = setTimeout(() => { el.className = 'form-status'; el.innerHTML = ''; }, 5000);
+        }
+
+        async function copyLink() {
+            if (!currentQrUrl) return;
+            try {
+                await navigator.clipboard.writeText(currentQrUrl);
+                flash(copyBtn, '<i class="fas fa-check"></i> Copied!');
+            } catch {
+                showStatus('Could not copy link', 'error');
+            }
+        }
+
+        function downloadQR() {
+            if (!currentQrUrl) { alert('Generate a QR code first'); return; }
             const link = document.createElement('a');
-            link.href = qrSource;
-            link.download = qrSource;
-
+            link.href = currentQrUrl;
+            link.download = 'qr-code.png';
+            link.target = '_blank';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
+
+        function flash(btn, html) {
+            const original = btn.innerHTML;
+            btn.innerHTML = html;
+            setTimeout(() => { btn.innerHTML = original; }, 1600);
+        }
+
+        // Refresh the live stats + recent gallery after generating
+        async function refreshStats() {
+            try {
+                const res = await fetch('/api/stats');
+                const data = await res.json();
+
+                document.getElementById('statTotal').textContent = data.total;
+
+                const grid = document.getElementById('recentGrid');
+                if (data.recent && data.recent.length) {
+                    grid.innerHTML = data.recent.map(item => `
+                        <div class="recent-item">
+                            <img src="${item.qr_path}" alt="QR code" loading="lazy">
+                            <span title="${item.request_url}">${item.request_url}</span>
+                        </div>`).join('');
+                }
+            } catch (_) { /* non-critical */ }
+        }
+
+        // Footer year
+        document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 
 </body>
